@@ -1,0 +1,496 @@
+{% extends 'base.html' %}
+{% block head %}
+<h3>Docker管理平台</h3>
+{% end %}
+
+{% block right-panel-content %}
+<section class="content">
+    <div class="row" style="margin-bottom:5px;">
+        <div class="col-md-3">
+            <div class="sm-st clearfix">
+                <span class="sm-st-icon st-red"><i class="fa fa-check-square-o"></i></span>
+                <div class="sm-st-info">
+                    <span>100</span>
+                    节点数
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="sm-st clearfix">
+                <span class="sm-st-icon st-violet"><i class="fa fa-envelope-o"></i></span>
+                <div class="sm-st-info">
+                    <span>1500</span>
+                    容器数
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="sm-st clearfix">
+                <span class="sm-st-icon st-blue"><i class="fa fa-dollar"></i></span>
+                <div class="sm-st-info">
+                    <span>3000</span>
+                    镜像数
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="sm-st clearfix">
+                <span class="sm-st-icon st-green"><i class="fa fa-paperclip"></i></span>
+                <div class="sm-st-info">
+                    <span>30</span>
+                    仓库数
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Main row -->
+    <div class="row">
+        <div class="col-md-8">
+            earning graph start
+            <section class="panel">
+                <header class="panel-heading">
+                    Images Graph
+                </header>
+                <div class="panel-body">
+                    <div id="image_data"  style="display: none">{{image_data}}</div>
+                    <div id="ip_list"  style="display: none">{{ip_list}}</div>
+                    <div id="container" style="width: 90%;height:400px;"></div>
+                </div>
+            </section>
+            earning graph end
+        </div>
+        <div class="col-lg-4">
+            <!--chat start-->
+            <section class="panel">
+                <header class="panel-heading">
+                    系统消息
+                </header>
+                <div class="panel-body" id="noti-box">
+                    <div class="alert alert-block alert-danger">
+                        <button data-dismiss="alert" class="close close-sm" type="button">
+                            <i class="fa fa-times"></i>
+                        </button>
+                        <strong>节点!</strong> Node 192.168.180.128 went down for 10 minutes.
+                        <br/>Sat Mar 17 22:16:21 HKT 2018
+                    </div>
+                    <div class="alert alert-warning">
+                        <button data-dismiss="alert" class="close close-sm" type="button">
+                            <i class="fa fa-times"></i>
+                        </button>
+                        <strong>容器!</strong> Container 172.16.0.1 CPU over 80% 10 minutes.
+                        <br/>Sat Mar 17 21:38:52 HKT 2018
+                    </div>
+                    <div class="alert alert-info">
+                        <button data-dismiss="alert" class="close close-sm" type="button">
+                            <i class="fa fa-times"></i>
+                        </button>
+                        <strong>用户!</strong> Administrator privileges for user admin are revoked.
+                        <br/>Sat Mar 17 19:34:11 HKT 2018
+                    </div>
+                    <div class="alert alert-success">
+                        <button data-dismiss="alert" class="close close-sm" type="button">
+                            <i class="fa fa-times"></i>
+                        </button>
+                        <strong>镜像!</strong> Mirror docker.io/hkumar/ ubun-14.04.2 update.
+                        <br/>Sat Mar 17 10:11:05 HKT 2018
+                    </div>
+                    <div class="alert alert-warning">
+                        <button data-dismiss="alert" class="close close-sm" type="button">
+                            <i class="fa fa-times"></i>
+                        </button>
+                        <strong>容器!</strong> Container 172.16.11.12 memory utilization exceeded 80% for 10 minutes.
+                        <br/>Sat Mar 17 09:14:21 HKT 2018
+                    </div>
+                    <div class="alert alert-block alert-danger">
+                        <button data-dismiss="alert" class="close close-sm" type="button">
+                            <i class="fa fa-times"></i>
+                        </button>
+                        <strong>容器!</strong> Container 172.16.125.138 down.
+                        <br/>Sat Mar 17 06:14:21 HKT 2018
+                    </div>
+                    <div class="alert alert-block alert-danger">
+                        <button data-dismiss="alert" class="close close-sm" type="button">
+                            <i class="fa fa-times"></i>
+                        </button>
+                        <strong>仓库!</strong> The connection failed at 192.168.155.1.
+                        <br/>Sat Mar 17 05:14:21 HKT 2018
+                    </div>
+                    <div class="alert alert-success">
+                        <button data-dismiss="alert" class="close close-sm" type="button">
+                            <i class="fa fa-times"></i>
+                        </button>
+                        <strong>镜像!</strong> Mirror docker.io/hkumar/ ubun-14.04.2 update.
+                    </div>
+                    <div class="alert alert-warning">
+                        <button data-dismiss="alert" class="close close-sm" type="button">
+                            <i class="fa fa-times"></i>
+                        </button>
+                        <strong>节点!</strong> Node 192.168.33.3 connection timeout.
+                        <br/>Sat Mar 17 03:44:22 HKT 2018
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+            <!--earning graph start-->
+            <section class="panel">
+                <header class="panel-heading">
+                    Earning Graph
+                </header>
+                <div class="panel-body">
+                    <canvas id="linechart" width="600" height="330"></canvas>
+                </div>
+            </section>
+            <!--earning graph end-->
+        </div><!--end col-6 -->
+        <div class="col-md-4">
+            <section class="panel">
+                <header class="panel-heading">
+                    Twitter Feed
+                </header>
+                <div class="panel-body">
+                    <div class="twt-area">
+                        <form action="#" method="post">
+                            <textarea class="form-control" name="profile-tweet"
+                                      placeholder="Share something on Twitter.." rows="3"></textarea>
+
+                            <div class="clearfix">
+                                <button class="btn btn-sm btn-primary pull-right" type="submit">
+                                    <i class="fa fa-twitter"></i>
+                                    Tweet
+                                </button>
+                                <a class="btn btn-link btn-icon fa fa-location-arrow" data-original-title="Add Location"
+                                   data-placement="bottom" data-toggle="tooltip" href=
+                                           "#" style="text-decoration:none;" title=""></a>
+                                <a class="btn btn-link btn-icon fa fa-camera" data-original-title="Add Photo"
+                                   data-placement="bottom" data-toggle="tooltip" href="#"
+                                   style="text-decoration:none;" title=""></a>
+                            </div>
+                        </form>
+                    </div>
+                    <ul class="media-list">
+                        <li class="media">
+                            <a href="#" class="pull-left">
+                                <img src="/static/images/main/26115.jpg" alt="Avatar" class="img-circle" width="64"
+                                     height="64">
+                            </a>
+                            <div class="media-body">
+                                <span class="text-muted pull-right">
+                                    <small><em>30 min ago</em></small>
+                                </span>
+                                <a href="page_ready_user_profile.php">
+                                    <strong>John Doe</strong>
+                                </a>
+                                <p>
+                                    In hac <a href="#">habitasse</a> platea dictumst. Proin ac nibh rutrum lectus
+                                    rhoncus eleifend.
+                                    <a href="#" class="text-danger">
+                                        <strong>#dev</strong>
+                                    </a>
+                                </p>
+                            </div>
+                        </li>
+                        <li class="media">
+                            <a href="#" class="pull-left">
+                                <img src="/static/images/main/26115.jpg" alt="Avatar" class="img-circle" width="64"
+                                     height="64">
+                            </a>
+                            <div class="media-body">
+                                <span class="text-muted pull-right">
+                                    <small><em>30 min ago</em></small>
+                                </span>
+                                <a href="page_ready_user_profile.php">
+                                    <strong>John Doe</strong>
+                                </a>
+                                <p>
+                                    In hac <a href="#">habitasse</a> platea dictumst. Proin ac nibh rutrum lectus
+                                    rhoncus eleifend.
+                                    <a href="#" class="text-danger">
+                                        <strong>#design</strong>
+                                    </a>
+                                </p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-5">
+            <div class="panel">
+                <header class="panel-heading">
+                    Teammates
+                </header>
+                <ul class="list-group teammates">
+                    <li class="list-group-item">
+                        <a href=""><img src="/static/images/main/26115.jpg" width="50" height="50"></a>
+                        <span class="pull-right label label-danger inline m-t-15">Admin</span>
+                        <a href="">root</a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href=""><img src="/static/images/main/26115.jpg" width="50" height="50"></a>
+                        <span class="pull-right label label-info inline m-t-15">Member</span>
+                        <a href="">tom</a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href=""><img src="/static/images/main/26115.jpg" width="50" height="50"></a>
+                        <span class="pull-right label label-warning inline m-t-15">Editor</span>
+                        <a href="">cq</a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href=""><img src="/static/images/main/26115.jpg" width="50" height="50"></a>
+                        <span class="pull-right label label-warning inline m-t-15">Editor</span>
+                        <a href="">cq</a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href=""><img src="/static/images/main/26115.jpg" width="50" height="50"></a>
+                        <span class="pull-right label label-success inline m-t-15">Subscriber</span>
+                        <a href="">admin</a>
+                    </li>
+                </ul>
+                <div class="panel-footer bg-white">
+                    <!-- <span class="pull-right badge badge-info">32</span> -->
+                    <button class="btn btn-primary btn-addon btn-sm">
+                        <i class="fa fa-plus"></i>
+                        Add Teammate
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-7">
+            <section class="panel tasks-widget">
+                <header class="panel-heading">
+                    Todo list
+                </header>
+                <div class="panel-body">
+                    <div class="task-content">
+                        <ul class="task-list">
+                            <li>
+                                <div class="task-checkbox">
+                                    <!-- <input type="checkbox" class="list-child" value=""  /> -->
+                                    <input type="checkbox" class="flat-grey list-child"/>
+                                    <!-- <input type="checkbox" class="square-grey"/> -->
+                                </div>
+                                <div class="task-title">
+                                    <span class="task-title-sp">Director is Modern Dashboard</span>
+                                    <span class="label label-success">2 Days</span>
+                                    <div class="pull-right hidden-phone">
+                                        <button class="btn btn-default btn-xs"><i class="fa fa-check"></i></button>
+                                        <button class="btn btn-default btn-xs"><i class="fa fa-pencil"></i></button>
+                                        <button class="btn btn-default btn-xs"><i class="fa fa-times"></i></button>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="task-checkbox">
+                                    <!-- <input type="checkbox" class="list-child" value=""  /> -->
+                                    <input type="checkbox" class="flat-grey"/>
+                                </div>
+                                <div class="task-title">
+                                    <span class="task-title-sp">Fully Responsive & Bootstrap 3.0.2 Compatible</span>
+                                    <span class="label label-danger">Done</span>
+                                    <div class="pull-right hidden-phone">
+                                        <button class="btn btn-default btn-xs"><i class="fa fa-check"></i></button>
+                                        <button class="btn btn-default btn-xs"><i class="fa fa-pencil"></i></button>
+                                        <button class="btn btn-default btn-xs"><i class="fa fa-times"></i></button>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="task-checkbox">
+                                    <!-- <input type="checkbox" class="list-child" value=""  /> -->
+                                    <input type="checkbox" class="flat-grey"/>
+                                </div>
+                                <div class="task-title">
+                                    <span class="task-title-sp">Latest Design Concept</span>
+                                    <span class="label label-warning">Company</span>
+                                    <div class="pull-right hidden-phone">
+                                        <button class="btn btn-default btn-xs"><i class="fa fa-check"></i></button>
+                                        <button class="btn btn-default btn-xs"><i class="fa fa-pencil"></i></button>
+                                        <button class="btn btn-default btn-xs"><i class="fa fa-times"></i></button>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="task-checkbox">
+                                    <!-- <input type="checkbox" class="list-child" value=""  /> -->
+                                    <input type="checkbox" class="flat-grey"/>
+                                </div>
+                                <div class="task-title">
+                                    <span class="task-title-sp">Write well documentation for this theme</span>
+                                    <span class="label label-primary">3 Days</span>
+                                    <div class="pull-right hidden-phone">
+                                        <button class="btn btn-default btn-xs"><i class="fa fa-check"></i></button>
+                                        <button class="btn btn-default btn-xs"><i class="fa fa-pencil"></i></button>
+                                        <button class="btn btn-default btn-xs"><i class="fa fa-times"></i></button>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="task-checkbox">
+                                    <!-- <input type="checkbox" class="list-child" value=""  /> -->
+                                    <input type="checkbox" class="flat-grey"/>
+                                </div>
+                                <div class="task-title">
+                                    <span class="task-title-sp">Don't bother to download this Dashbord</span>
+                                    <span class="label label-inverse">Now</span>
+                                    <div class="pull-right">
+                                        <button class="btn btn-default btn-xs"><i class="fa fa-check"></i></button>
+                                        <button class="btn btn-default btn-xs"><i class="fa fa-pencil"></i></button>
+                                        <button class="btn btn-default btn-xs"><i class="fa fa-times"></i></button>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="task-checkbox">
+                                    <!-- <input type="checkbox" class="list-child" value=""  /> -->
+                                    <input type="checkbox" class="flat-grey"/>
+                                </div>
+                                <div class="task-title">
+                                    <span class="task-title-sp">Give feedback for the template</span>
+                                    <span class="label label-success">2 Days</span>
+                                    <div class="pull-right hidden-phone">
+                                        <button class="btn btn-default btn-xs"><i class="fa fa-check"></i></button>
+                                        <button class="btn btn-default btn-xs"><i class="fa fa-pencil"></i></button>
+                                        <button class="btn btn-default btn-xs"><i class="fa fa-times"></i></button>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="task-checkbox">
+                                    <!-- <input type="checkbox" class="list-child" value=""  /> -->
+                                    <input type="checkbox" class="flat-grey"/>
+                                </div>
+                                <div class="task-title">
+                                    <span class="task-title-sp">Tell your friends about this admin template</span>
+                                    <span class="label label-danger">Now</span>
+                                    <div class="pull-right hidden-phone">
+                                        <button class="btn btn-default btn-xs"><i class="fa fa-check"></i></button>
+                                        <button class="btn btn-default btn-xs"><i class="fa fa-pencil"></i></button>
+                                        <button class="btn btn-default btn-xs"><i class="fa fa-times"></i></button>
+                                    </div>
+                                </div>
+                            </li>
+
+                        </ul>
+                    </div>
+                    <div class=" add-task-row">
+                        <a class="btn btn-success btn-sm pull-left" href="#">Add New Tasks</a>
+                        <a class="btn btn-default btn-sm pull-right" href="#">See All Tasks</a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <!-- row end -->
+</section>
+{% end %}
+
+{% block bottom-js %}
+<script src="/static/js/main/echarts.min.js"></script>
+<script type="text/javascript">
+    $('input').on('ifChecked', function (event) {
+        // var element = $(this).parent().find('input:checkbox:first');
+        // element.parent().parent().parent().addClass('highlight');
+        $(this).parents('li').addClass("task-done");
+        console.log('ok');
+    });
+    $('input').on('ifUnchecked', function (event) {
+        // var element = $(this).parent().find('input:checkbox:first');
+        // element.parent().parent().parent().removeClass('highlight');
+        $(this).parents('li').removeClass("task-done");
+        console.log('not');
+    });
+</script>
+<script>
+    $('#noti-box').slimScroll({
+        height: '400px',
+        size: '5px',
+        BorderRadius: '5px'
+    });
+    $('input[type="checkbox"].flat-grey, input[type="radio"].flat-grey').iCheck({
+        checkboxClass: 'icheckbox_flat-grey',
+        radioClass: 'iradio_flat-grey'
+    });
+</script>
+<script type="text/javascript">
+    $(function () {
+        "use strict";
+        //BAR CHART
+        var data = {
+            labels: ["January", "February", "March", "April", "May", "June", "July"],
+            datasets: [
+                {
+                    label: "My First dataset",
+                    fillColor: "rgba(220,220,220,0.2)",
+                    strokeColor: "rgba(220,220,220,1)",
+                    pointColor: "rgba(220,220,220,1)",
+                    pointStrokeColor: "#fff",
+                    pointHighlightFill: "#fff",
+                    pointHighlightStroke: "rgba(220,220,220,1)",
+                    data: [65, 59, 80, 81, 56, 55, 40]
+                },
+                {
+                    label: "My Second dataset",
+                    fillColor: "rgba(151,187,205,0.2)",
+                    strokeColor: "rgba(151,187,205,1)",
+                    pointColor: "rgba(151,187,205,1)",
+                    pointStrokeColor: "#fff",
+                    pointHighlightFill: "#fff",
+                    pointHighlightStroke: "rgba(151,187,205,1)",
+                    data: [28, 48, 40, 19, 86, 27, 90]
+                }
+            ]
+        };
+        new Chart(document.getElementById("linechart").getContext("2d")).Line(data, {
+            responsive: true,
+            maintainAspectRatio: false
+        });
+    });
+    // Chart.defaults.global.responsive = true;
+</script>
+<script type="text/javascript">
+    var myChart = echarts.init(document.getElementById('container'));
+    var image_data = JSON.parse($("#image_data").text());
+    var ip_list = JSON.parse($("#ip_list").text());
+    option = {
+        title: {
+            text: '镜像使用统计',
+            subtext: '各节点镜像数占比',
+            left: 'center'
+        },
+        tooltip : {
+            trigger: 'item',
+            formatter: "{a} <br/>{b} : {c} ({d}%)"
+        },
+        legend: {
+            // orient: 'vertical',
+            // top: 'middle',
+            bottom: 10,
+            left: 'center',
+            data: ip_list
+        },
+        series : [
+            {
+                type: 'pie',
+                radius : '65%',
+                center: ['50%', '50%'],
+                selectedMode: 'single',
+                data:image_data,
+                itemStyle: {
+                    emphasis: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }
+        ]
+    };
+    myChart.setOption(option);
+</script>
+{% end %}
+

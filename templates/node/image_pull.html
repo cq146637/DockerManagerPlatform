@@ -1,0 +1,88 @@
+{% extends '../base.html' %}
+
+{ % block head %}
+{ % end % }
+
+{% block right-panel-content %}
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#nodelist').DataTable();
+} );
+</script>
+<ul>
+    <h3>镜像拉取</h3>
+</ul>
+<!--<button class="btn btn-primary btn-lg" onclick="javascript:window.location.href='/nodeadd'" style="margin-bottom: 5px">创建节点</button>-->
+<div>
+<form class="navbar-form navbar-left" role="search" action="/imgpull?active=4&action=search&node_ip={{node_ip}}&node_port={{node_port}}" method="post">
+      <div class="form-group" style="width: 500px;margin-left: 30%">
+            <input type="text" class="form-control" placeholder="Search" name="search_content">
+      </div>
+      <button type="submit" class="btn btn-default" style="margin-left: 42%">搜索</button>
+</form>
+      <button type="submit" class="btn btn-default" onclick="window.location.href='/imglist?active=4'" style="margin-left: 42%;margin-top: 16px">返回</button>
+<table id="nodelist" class="display" cellspacing="0" width="100%">
+        <thead>
+        <tr>
+            <th >序号</th>
+            <th >index_name</th>
+            <th >registry_name</th>
+            <th >name</th>
+            <th >star_count</th>
+            <th >is_official</th>
+            <th >is_trusted</th>
+            <th >is_automated</th>
+            <th >description</th>
+            <th >操作</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for row in search_data %}
+            <tr>
+                <td>{{row[0]}}</td>
+                <td>{{row[1]["index_name"]}}</td>
+                <td id="registry_name">{{row[1]["registry_name"]}}</td>
+                <td id="image_name">{{row[1]["name"]}}</td>
+                <td>{{row[1]["star_count"]}}</td>
+                <td>{{row[1]["is_official"]}}</td>
+                <td>{{row[1]["is_trusted"]}}</td>
+                <td>{{row[1]["is_automated"]}}</td>
+                <td>{{row[1]["description"]}}</td>
+                <td >
+                    <input type="button" class="btn btn-default" onclick="pull(this);" value="拉取">
+                </td>
+            </tr>
+        {% end %}
+        </tbody>
+</table>
+<div id="node_ip" value="{{node_ip}}" style="display: none"></div>
+<div id="node_port" value="{{node_port}}" style="display: none"></div>
+</div>
+
+{% end %}
+
+{% block bottom-js %}
+<script type="text/javascript">
+    function pull(ths) {
+        var registry_name = $($($(ths).parent().parent()).find("#registry_name")).text();
+        var image_name = $($($(ths).parent().parent()).find("#image_name")).text();
+        var node_ip = $("#node_ip").attr("value");
+        var node_port = $("#node_port").attr("value");
+        var image_tar = "latest";
+        var pull_name = registry_name + '/'+ image_name + ':' + image_tar;
+        // window.location.href = "/imgpull?active=4&action=pull&pull_name=" + pull_name;
+        $.ajax({
+            url:'/imgpull',
+            type:'post',
+            data:{'active':4,'action':'pull','pull_name':pull_name,'node_ip':node_ip,'node_port':node_port},
+            complete: function () {
+                $(ths).attr("disabled", "disabled")
+            },
+            success: function(data){
+                window.location.href = "/imglist?active=4";
+            }
+        })
+    }
+</script>
+{% end %}

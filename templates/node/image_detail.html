@@ -1,0 +1,162 @@
+{% extends '../base.html' %}
+
+{% block head %}
+{% end %}
+
+{%block right-panel-content %}
+<div id="content">
+<head>
+    <ul>
+        <h3>镜像管理</h3>
+    </ul>
+</head>
+<form class="form-horizontal" action="/imglist" method="get">
+    <div class="form-group">
+      <label for="img_name" class="col-sm-1 control-label">镜像名</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="img_name" name="img_name" value="{{detail_data['RepoTags'][0]}}" disabled/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="img_id" class="col-sm-1 control-label">镜像ID</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="img_id" name="img_id" value="{{detail_data['Id']}}" disabled/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="img_time" class="col-sm-1 control-label">创建时间</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="img_time" name="img_time" value="{{detail_data['Created']}}" disabled/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="cont_id" class="col-sm-1 control-label">容器ID</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="cont_id" name="cont_id" value="{{detail_data['Container']}}" disabled/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="cont_hostname" class="col-sm-1 control-label">容器主机名</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="cont_hostname" name="cont_hostname" value="{{detail_data['ContainerConfig']['Hostname']}}" disabled/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="cont_domainname" class="col-sm-1 control-label">容器域名</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="cont_domainname" name="cont_domainname" value="{{detail_data['ContainerConfig']['Domainname']}}" disabled/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="cont_user" class="col-sm-1 control-label">容器用户</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="cont_user" name="cont_user" value="{{detail_data['ContainerConfig']['User']}}" disabled/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="cont_attachstdin" class="col-sm-1 control-label">AttachStdin</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="cont_attachstdin" name="cont_attachstdin" value="{{detail_data['ContainerConfig']['AttachStdin']}}" disabled/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="cont_attachstdout" class="col-sm-1 control-label">AttachStdout</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="cont_attachstdout" name="cont_attachstdout" value="{{detail_data['ContainerConfig']['AttachStdout']}}" disabled/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="cont_attachstderr" class="col-sm-1 control-label">AttachStderr</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="cont_attachstderr" name="cont_attachstderr" value="{{detail_data['ContainerConfig']['AttachStderr']}}" disabled/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="cont_tty" class="col-sm-1 control-label">Tty</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="cont_tty" name="cont_tty" value="{{detail_data['ContainerConfig']['Tty']}}" disabled/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="cont_openstdin" class="col-sm-1 control-label">OpenStdin</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="cont_openstdin" name="cont_openstdin" value="{{detail_data['ContainerConfig']['OpenStdin']}}" disabled/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="cont_stdinonce" class="col-sm-1 control-label">StdinOnce</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="cont_stdinonce" name="cont_stdinonce" value="{{detail_data['ContainerConfig']['StdinOnce']}}" disabled/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="cont_path" class="col-sm-1 control-label">PATH</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="cont_path" name="cont_path" value="{{detail_data['ContainerConfig']['Env']}}" disabled/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="cont_cmd" class="col-sm-1 control-label">Cmd</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="cont_cmd" name="cont_cmd" value="{{detail_data['ContainerConfig']['Cmd']}}" disabled/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="cont_image" class="col-sm-1 control-label">Image</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="cont_image" name="cont_image" value="{{detail_data['ContainerConfig']['Image']}}" disabled/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="cont_volumes" class="col-sm-1 control-label">Volumes</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="cont_volumes" name="cont_volumes" value="{{detail_data['ContainerConfig']['Volumes']}}" disabled/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="cont_workingdir" class="col-sm-1 control-label">WorkingDir</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="cont_workingdir" name="cont_workingdir" value="{{detail_data['ContainerConfig']['WorkingDir']}}" disabled/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="cont_entrypoint" class="col-sm-1 control-label">Entrypoint</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="cont_entrypoint" name="cont_entrypoint" value="{{detail_data['ContainerConfig']['Entrypoint']}}" disabled/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="cont_onbuild" class="col-sm-1 control-label">OnBuild</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="cont_onbuild" name="cont_entrypoint" value="{{detail_data['ContainerConfig']['OnBuild']}}" disabled/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="cont_labels" class="col-sm-1 control-label">Labels</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="cont_labels" name="cont_labels" value="{{detail_data['ContainerConfig']['Labels']}}" disabled/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="cont_dockerversion" class="col-sm-1 control-label">DockerVersion</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="cont_dockerversion" name="cont_dockerversion" value="{{detail_data['DockerVersion']}}" disabled/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="cont_author" class="col-sm-1 control-label">Author</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="cont_author" name="cont_author" value="{{detail_data['Author']}}" disabled/>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-offset-1 col-sm-10">
+         <button type="submit" class="btn btn-default" name="active=4">返回</button>
+      </div>
+    </div>
+</form>
+</div>
+{% end %}
+
+{% block bottom-js %}
+{% end %}

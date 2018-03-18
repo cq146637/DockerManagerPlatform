@@ -1,0 +1,194 @@
+{% extends '../base.html' %}
+
+{% block head %}
+<style>
+        .hide{
+            display: none;
+        }
+        .t1{
+            padding-left: 60px;
+        }
+        .c1{
+            position: fixed;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            background-color: black;
+            opacity: 0.6;
+            z-index: 9;
+        }
+        .c2{
+            width: 500px;
+            height: 400px;
+            background-color: white;
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            margin-left: -250px;
+            margin-top: -200px;
+            z-index: 10;
+            border-radius: 1%;
+        }
+    </style>
+{% end %}
+
+{%block right-panel-content %}
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#imglist').DataTable({
+        // "paging":   false
+    });
+    $('#nodelist').DataTable({
+        "paging":   false
+    });
+    $('#nodelist_1').DataTable({
+        "paging":   false
+    });
+} );
+</script>
+<div id="content">
+<head>
+    <ul>
+        <h3>镜像管理</h3>
+    </ul>
+</head>
+<button class="btn btn-primary btn-lg image-pull" style="margin-bottom: 5px">拉取镜像</button>
+<button class="btn btn-primary btn-lg image-push" style="margin-bottom: 5px">上传镜像</button>
+<!-- 遮罩层开始 -->
+    <div id="i1" class="c1 hide"></div>
+    <!-- 遮罩层结束 -->
+
+    <!-- 弹出框开始 -->
+    <div id="i2" class="c2 hide row" style="text-align: center;overflow: auto;">
+        <table id="nodelist" class="display t1" cellspacing="0" width="100%" style="margin-right: 180px">
+            <thead>
+                <tr>
+                    <th>选择节点</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in node_ip %}
+                    <tr>
+                        <td>
+                            <button type="button" class="btn btn-info btn-lg">{{row[0]}}</button>
+                        </td>
+                    </tr>
+                {% end %}
+                <tr>
+                    <td>
+                        <button type="button" class="btn btn-warning btn-lg">取消</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- 弹出框结束 -->
+<table id="imglist" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th>选项框</th>
+            <th >序号</th>
+            <th >节点IP</th>
+            <th style="display: none"></th>
+            <th >镜像ID</th>
+            <th>镜像名</th>
+            <th >发布版本</th>
+            <th >标签名</th>
+            <th >创建时间</th>
+            <th >镜像大小</th>
+            <th >操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in image_data %}
+            {% for item in row['images'] %}
+                <tr>
+                    <td>
+                        <label class="btn">
+                            <input type="checkbox">
+                        </label>
+                    </td>
+                    <td>{{item['id']}}</td>
+                    <td id="node_ip">{{row['node_ip']}}</td>
+                    <td id="node_port" style="display: none">{{row['node_port']}}</td>
+                    <td id="image_id">{{item['Id']}}</td>
+                    <td id="image_repo">{{item['RepoTags']}}</td>
+                    <td id="image_tag">{{item['Tags']}}</td>
+                    <td>{{item['Labels']}}</td>
+                    <td>{{item['Created']}}</td>
+                    <td>{{item['Size']}}</td>
+                    <th>
+                        <a onclick="detailImage(this);" href="#">
+                            <img src='/static/images/modify.png' alt='详细' title='修改' />
+                        </a>
+                        <a onclick="deleteImage(this);" href="#">
+                            <img src='/static/images/remove.png' alt='删除' title='删除' />
+                        </a>
+                    </th>
+                </tr>
+            {% end %}
+        {% end %}
+    </tbody>
+</table>
+
+</div>
+{% end %}
+
+{% block bottom-js %}
+<script>
+    function ShowModel(){
+            document.getElementById('i1').classList.remove('hide');
+            document.getElementById('i2').classList.remove('hide');
+        }
+        function HideModel(){
+            document.getElementById('i1').classList.add('hide');
+            document.getElementById('i2').classList.add('hide');
+        }
+    $(".image-pull").click(function () {
+       ShowModel();
+    });
+    $(".btn-warning").click(function () {
+       HideModel();
+    });
+    $(".btn-info").each(function () {
+       $(this).click(function () {
+           var node_ip = $(this).text();
+           window.location.href = '/imgpull?active=4&node_ip=' + node_ip;
+       })
+    });
+    $(".image-push").click(function () {
+        b644f1798fa17e5e34ac6ea4393fa4 = [];
+        $(":checkbox").each(function () {
+           if($(this).prop('checked')){
+               var node_ip = $($(this).parent().parent().parent().find("#node_ip")).text();
+               var node_port = $($(this).parent().parent().parent().find("#node_port")).text();
+               var push_name = $($(this).parent().parent().parent().find("#image_repo")).text();
+               var image_tag = $($(this).parent().parent().parent().find("#image_tag")).text();
+               var temp = [];
+               temp[temp.length] = node_ip;
+               temp[temp.length] = node_port;
+               temp[temp.length] = push_name;
+               temp[temp.length] = image_tag;
+               b644f1798fa17e5e34ac6ea4393fa4[b644f1798fa17e5e34ac6ea4393fa4.length] = temp;
+           }
+        });
+        var data = JSON.stringify(b644f1798fa17e5e34ac6ea4393fa4);
+        console.log(data);
+       window.location.href = "/imgpush?active=4&push_list=" + data;
+    });
+    function deleteImage(ths) {
+        confirm('注意：确定要删除此条目吗？');
+        var id = $($(ths).parent().parent()).find('#image_id').text();
+        var ip = $($(ths).parent().parent()).find('#node_ip').text();
+        var port = $($(ths).parent().parent()).find('#node_port').text();
+        window.location.href = "/imgmodify?active=4&action=delete&image_id="+id+"&node_ip="+ip+"&node_port="+port;
+    }
+    function detailImage(ths) {
+        var id = $($(ths).parent().parent()).find('#image_id').text();
+        var ip = $($(ths).parent().parent()).find('#node_ip').text();
+        var port = $($(ths).parent().parent()).find('#node_port').text();
+        window.location.href = "/imgmodify?active=4&action=detail&image_id="+id+"&node_ip="+ip+"&node_port="+port;
+    }
+</script>
+{% end %}

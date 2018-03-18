@@ -1,0 +1,237 @@
+{% extends '../base.html' %}
+
+{% block head %}
+<style>
+        .hide{
+            display: none;
+        }
+        .t1{
+            padding-left: 60px;
+        }
+        .c1{
+            position: fixed;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            background-color: black;
+            opacity: 0.6;
+            z-index: 9;
+        }
+        .c2{
+            width: 500px;
+            height: 400px;
+            background-color: white;
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            margin-left: -250px;
+            margin-top: -200px;
+            z-index: 10;
+            border-radius: 1%;
+        }
+    </style>
+{% end %}
+
+{%block right-panel-content %}
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#conlist').DataTable({
+        // "paging":   false
+    });
+    $('#nodelist').DataTable({
+        "paging":   false
+    });
+    $('#nodelist_1').DataTable({
+        "paging":   false
+    });
+} );
+</script>
+<div id="content">
+<head>
+    <ul>
+        <h3>容器管理</h3>
+    </ul>
+    <!--<div>-->
+        <!--<input id="createCont" type="button" class="btn btn-primary" value="创建容器">-->
+    <!--</div>-->
+    <!-- Button trigger modal -->
+    <button class="btn btn-primary btn-lg c_cont" style="margin-bottom: 5px">创建容器</button>
+    <button class="btn btn-primary btn-lg r_cont" style="margin-bottom: 5px">迁移容器</button>
+    <!-- 遮罩层开始 -->
+    <div id="i1" class="c1 hide"></div>
+    <!-- 遮罩层结束 -->
+
+    <!-- 弹出框开始 -->
+    <div id="i2" class="c2 hide row" style="text-align: center;">
+        <table id="nodelist" class="display t1" cellspacing="0" width="100%" style="margin-right: 180px">
+            <thead>
+                <tr>
+                    <th>选择节点</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in node_ip %}
+                    {% if row == 0 %}
+                        {% continue %}
+                    {% end %}
+                    <tr>
+                        <td>
+                            <button type="button" class="btn btn-info btn-lg create">{{row}}</button>
+                        </td>
+                    </tr>
+                {% end %}
+                <tr>
+                    <td>
+                        <button type="button" class="btn btn-warning btn-lg">取消</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div id="i3" class="c2 hide row" style="text-align: center;">
+        <table id="nodelist_1" class="display t1" cellspacing="0" width="100%" style="margin-right: 180px">
+            <thead>
+                <tr>
+                    <th>选择节点</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in node_ip %}
+                    {% if row == 0 %}
+                        {% continue %}
+                    {% end %}
+                    <tr>
+                        <td>
+                            <button type="button" class="btn btn-info btn-lg remotion">{{row}}</button>
+                        </td>
+                    </tr>
+                {% end %}
+                <tr>
+                    <td>
+                        <button type="button" class="btn btn-warning btn-lg">取消</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- 弹出框结束 -->
+</head>
+
+<table id="conlist" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th>选项框</th>
+            <th >序号</th>
+            <th>节点IP</th>
+            <th >容器ID</th>
+            <th >容器IP</th>
+            <th >容器名</th>
+            <th >CPU时间</th>
+            <th >CPU配额</th>
+            <th >内存</th>
+            <th >状态</th>
+            <th >运行命令</th>
+            <th >创建时间</th>
+            <th >操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in con_data %}
+            {% for con in row[1] %}
+            <tr>
+                <td>
+                    <label class="btn">
+                        <input type="checkbox">
+                    </label>
+                </td>
+                <td>{{con}}</td>
+                <td id="node_ip">{{row[0]}}</td>
+                <td id="cont_id">{{row[1][con]['id_num']}}</td>
+                <td>{{row[1][con]["con_ip"]}}</td>
+                <td id="cont_name">{{row[1][con]["name"]}}</td>
+                <td>{{row[1][con]["cpuperiod"]}}</td>
+                <td>{{row[1][con]["cpuquota"]}}</td>
+                <td>{{row[1][con]["memory"]}}</td>
+                <td>{{row[1][con]["state"]}}</td>
+                <td>{{row[1][con]["cmd"]}}</td>
+                <td>{{row[1][con]["created"]}}</td>
+                <td >
+                <input type="button" class="btn btn-default" onclick="handle(this);" value="操作">
+                </td>
+            </tr>
+            {% end %}
+        {% end %}
+    </tbody>
+</table>
+
+</div>
+{% end %}
+
+{% block bottom-js %}
+<script>
+    function ShowModel_C(){
+            document.getElementById('i1').classList.remove('hide');
+            document.getElementById('i2').classList.remove('hide');
+        }
+    function ShowModel_R(){
+        document.getElementById('i1').classList.remove('hide');
+        document.getElementById('i3').classList.remove('hide');
+    }
+    function HideModel(){
+        document.getElementById('i1').classList.add('hide');
+        document.getElementById('i2').classList.add('hide');
+        document.getElementById('i3').classList.add('hide');
+    }
+    $(".c_cont").click(function () {
+       ShowModel_C();
+    });
+    $(".r_cont").click(function () {
+       ShowModel_R();
+    });
+    $(".btn-warning").click(function () {
+       HideModel();
+    });
+    $(".create").each(function () {
+       $(this).click(function () {
+           var node_ip = $(this).text();
+           window.location.href = '/concreate?node_ip=' + node_ip;
+       })
+    });
+    $(".remotion").each(function () {
+       $(this).click(function () {
+           var destination = $(this).text();
+           fa27660d52a1a580f169cb7a67beb0ede = [destination];
+           $(":checkbox").each(function () {
+           if($(this).prop('checked')){
+               var node_ip = $($(this).parent().parent().parent().find("#node_ip")).text();
+               var cont_id = $($(this).parent().parent().parent().find("#cont_id")).text();
+               var cont_name = $($(this).parent().parent().parent().find("#cont_name")).text();
+               var temp = [];
+               temp[temp.length] = node_ip;
+               temp[temp.length] = cont_id;
+               temp[temp.length] = cont_name;
+               fa27660d52a1a580f169cb7a67beb0ede[fa27660d52a1a580f169cb7a67beb0ede.length] = temp;
+                $(this).attr("disabled", "disabled")
+           }
+        });
+        var data = JSON.stringify(fa27660d52a1a580f169cb7a67beb0ede);
+       $.ajax({
+            url:'/conremotion?active=3',
+            type:'post',
+            data:{'remotion_data':data},
+            complete:HideModel(),
+            success: function(){
+                window.location.href = "/contlist?active=3&get_all_node=True";
+            }
+       })
+       })
+    });
+    function handle(ths) {
+        var con_id = $($(ths).parent().siblings()[3]).text();
+        var node_ip = $($(ths).parent().parent()).find("#node_ip").text();
+        window.location.href = "/conthandle?node_ip=" + node_ip + "&con_id=" + con_id;
+    }
+
+</script>
+{% end %}

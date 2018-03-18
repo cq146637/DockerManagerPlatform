@@ -1,0 +1,117 @@
+{% extends '../base.html' %}
+
+{% block head %}
+<ul>
+    <h3>创建节点</h3>
+</ul>
+{% end %}
+
+{% block right-panel-content %}
+<form class="form-horizontal" action="/nodeadd?active=2" method="post">
+    <div class="form-group">
+      <label for="node_name" class="col-sm-1 control-label">节点名</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="node_name" name="node_name" required/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="node_ip" class="col-sm-1 control-label">节点IP</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="node_ip" name="node_ip" required/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="node_port" class="col-sm-1 control-label">监听端口</label>
+      <div class="col-sm-10">
+            <input type="text" class="form-control" id="node_port" name="node_port" value="2375" required/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="node_cpus" class="col-sm-1 control-label">CPU个数</label>
+      <div class="col-sm-10">
+            <input type="text" class="form-control" id="node_cpus" name="node_cpus" value="4" required/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="node_mem" class="col-sm-1 control-label">内存数</label>
+      <div class="col-sm-10">
+         <select name='node_mem' id="node_mem">
+                <option selected="selected">1073741824</option>
+                <option >2147483648</option>
+                <option >3221225472</option>
+                <option >4294967296</option>
+                <option >6442450944</option>
+                <option >8589934592</option>
+                <option >12884901888</option>
+                <option >17179869184</option>
+                <option >34359738368</option>
+                <option >68719476736</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="node_imgs" class="col-sm-1 control-label">镜像数</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="node_imgs" name="node_imgs" value="0"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="node_state" class="col-sm-1 control-label">状态</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="node_state" name="node_state" value="online"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="node_cons" class="col-sm-1 control-label">容器数</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="node_cons" name="node_cons" value="0"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="node_os" class="col-sm-1 control-label">系统版本</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="node_os" name="node_os" placeholder="Ubuntu 14.04.4" required/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="node_ks" class="col-sm-1 control-label">内核版本</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="node_ks" name="node_ks" placeholder="3.19.0-32.generic" required/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="node_ds" class="col-sm-1 control-label">Docker版本</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="node_ds" name="node_ds" placeholder="1.13.1" required/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="node_group" class="col-sm-1 control-label">节点组</label>
+      <div class="col-sm-10">
+            <select name='node_group' id="node_group">
+                {% for row in group_list %}
+                    <option value="{{row[0]}}">{{row[1]}}</option>
+                {% end %}
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="user_group" class="col-sm-1 control-label">管理组</label>
+      <div class="col-sm-10">
+            <select name='user_group' id="user_group">
+                {% for row in group_list %}
+                    <option value="{{row[2]}}">{{row[3]}}</option>
+                {% end %}
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-offset-1 col-sm-10">
+         <button type="submit" class="btn btn-default" name="con_create">创建节点</button>
+      </div>
+    </div>
+</form>
+{% end %}
+
+{% block bottom-js %}
+{% end %}

@@ -1,0 +1,5 @@
+打开mysql的配置文件 vim /etc/my.cnf，
+
+加入max_connections=100一行（如果有，直接修改值即可），
+
+然后重启服务：/etc/init.d/mysqld restart
